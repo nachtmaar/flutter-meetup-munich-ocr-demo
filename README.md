@@ -1,16 +1,13 @@
 # flutter_meetup_munich_ocr_demo
 
-A new Flutter project.
+This repository contains Flutter OCR Sample code used in a [Meetup Talk](https://www.meetup.com/Flutter-Munich/events/260154719/)
 
-## Getting Started
+## Prerequisites
 
-This project is a starting point for a Flutter application.
+Follow intructions on <https://codelabs.developers.google.com/codelabs/flutter-firebase/#5> and <https://pub.dev/packages/firebase_ml_vision> to setup Firebase.
 
-A few resources to get you started if this is your first Flutter project:
+## Run
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+flutter run lib/main.dart
+```
