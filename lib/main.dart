@@ -7,6 +7,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'image.dart';
+import 'paint.dart';
 
 bool useFlutterImageCompress = true;
 bool keepExif = true;
@@ -15,7 +16,7 @@ bool autoCorrectionAngle = true;
 void main() async {
   String exif = "";
   // get image from camera
-  File imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+  File imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
   print("doFixOrientation: $useFlutterImageCompress");
 
   exif = await readExif(imageFile.readAsBytesSync());
@@ -30,28 +31,36 @@ void main() async {
   }
 
   FirebaseVisionImage image = FirebaseVisionImage.fromFile(imageFile);
-  TextRecognizer textRecognizer = FirebaseVision.instance.textRecognizer();
+  TextRecognizer textRecognizer = FirebaseVision.instance.cloudTextRecognizer();
 
   // print text
   String text = "";
+  List<TextElement> textElements = [];
   VisionText visionText = await textRecognizer.processImage(image);
   for (TextBlock block in visionText.blocks) {
     for (TextLine line in block.lines) {
       for (TextElement element in line.elements) {
         text += " ${element.text}";
+        textElements.add(element);
       }
     }
   }
 
+  Image imageFixed = Image.memory(imageFile.readAsBytesSync());
+
   // show text
-  runApp(OCRDisplay(text, exif));
+  runApp(OCRDisplay(text, exif, textElements, imageFixed));
 }
 
 class OCRDisplay extends StatelessWidget {
   final String text;
   final String exif;
+  final List<TextElement> textElements;
+  final Image image;
 
-  const OCRDisplay(this.text, this.exif, {Key key}) : super(key: key);
+  const OCRDisplay(this.text, this.exif, this.textElements, this.image,
+      {Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -60,14 +69,9 @@ class OCRDisplay extends StatelessWidget {
         appBar: AppBar(
           title: Text('Flutter Meetup Demo'),
         ),
-        body: Scaffold(
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(text),
-              Text(exif),
-            ],
-          ),
+        body: IngredientsPictureWidget(
+          image,
+          textElements,
         ),
       ),
     );
