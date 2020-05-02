@@ -14,6 +14,8 @@ bool keepExif = true;
 bool autoCorrectionAngle = true;
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   String exif = "";
   // get image from camera
   File imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
